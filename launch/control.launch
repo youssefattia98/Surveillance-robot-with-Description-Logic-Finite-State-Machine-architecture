@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<launch>
+  <node name="armcontrol" pkg="surveillance_fsm_robot" type="armcontrol.py" />
+  <node name="Ontologybuild" pkg="surveillance_fsm_robot" type="Ontologybuild.py" output="screen"/>
+  <node name="finitestates" pkg="surveillance_fsm_robot" type="finitestates.py" output="screen"/>
+  <node name="batterynode" pkg="surveillance_fsm_robot" type="batterynode.py"/>
+</launch>
