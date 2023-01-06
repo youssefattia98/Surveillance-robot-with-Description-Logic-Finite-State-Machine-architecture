@@ -23,7 +23,8 @@ def arm_move():
    while feedback < 1.5:
       pub.publish(1.5)
    pub.publish(0.0)
-   print("Scanned room, setting arm to initial position and terminating node")
+   print("Scanned room, setting arm to initial position and terminating nodes")
+   rospy.signal_shutdown('marker_publisher')
 
    
 if __name__ == '__main__':

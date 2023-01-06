@@ -12,9 +12,10 @@ import rospy
 from std_msgs.msg import Bool
 from move_base_msgs.msg import MoveBaseAction, MoveBaseGoal
 import actionlib
+import random
 
-charegedtime = 150
-
+charegedtime_min = 100
+charegedtime_max = 300
 def cancel_move_base_goal():
     # Create a simple action client
     client = actionlib.SimpleActionClient('move_base', MoveBaseAction)
@@ -41,7 +42,8 @@ def talker():
         print("Cancling goals, to charge the robot")
         cancel_move_base_goal()
         pub.publish(batt)
-        rospy.sleep(charegedtime)
+        sleeptime=random.uniform(charegedtime_min, charegedtime_max)
+        rospy.sleep(sleeptime)
 
 if __name__ == '__main__':
     try:
