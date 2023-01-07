@@ -14,16 +14,16 @@ The package was developed on a [docker image](https://hub.docker.com/r/carms84/e
 ## I) Robot Behavior:  
 Firstly the robot is spawned in (-6.0,11.0,0.05) it then starts scanning for thr Aruco markers around which are used to build the Ontology.The robot waits for the ontology (map) to be built in Room E. Then starting from the (move_in_corridor) state it checks if the battery is not low or there is no urgent room, it moves randomly in the two corridors and wait for some time. However, if a battery is low it goes to the state (charging), which keeps the robot in room E and stays there until the battery is charged. Also, if there is an urgent room while the battery is charged the robot visits it and stays there for some time (visitroom state). All the robot movements is controlled using move_base which depends on the gmapping node. Furthermore, whenever the robot reaches a room it scans it using the LIDAR with rotating the robot with a 180 degrees.
 The following diagram shows the map Ontology that the robot builds:  
-![immagine](https://github.com/youssefattia98/surveillance_fsm_robot/blob/main/Digrams%20%26%20videos/MAP.PNG)
+![immagine](https://github.com/youssefattia98/surveillance_fsm_robot/blob/main/docs/Digrams%20%26%20videos/MAP.PNG)
 
 ## II) Finite State Machine diagram:  
 The following finite state machine shows the behavior the robot follows when the architecture was initially designed:  
-![immagine](https://github.com/youssefattia98/surveillance_fsm_robot/blob/main/Digrams%20%26%20videos/fsm_digram.PNG)
+![immagine](https://github.com/youssefattia98/surveillance_fsm_robot/blob/main/docs/Digrams%20%26%20videos/fsm_digram.PNG)
 
 ## III) Nodes diagram:    
 The following diagram shows the software architecture of the package. 
 
-![immagine](https://github.com/youssefattia98/surveillance_fsm_robot/blob/main/Digrams%20%26%20videos/block%20digram.jpg)  
+![immagine](https://github.com/youssefattia98/surveillance_fsm_robot/blob/main/docs/Digrams%20%26%20videos/block%20digram.jpg)
 
 # 3) Installation
 For setting up the environment for this package to run correctly [Armor package](https://github.com/EmaroLab/armor), [Smach package](http://wiki.ros.org/smach), [OpenCV](https://github.com/ros-perception/vision_opencv.git), [ARUCO ros](https://github.com/CarmineD8/aruco_ros.git), [gmapping](http://wiki.ros.org/gmapping) and [move_base](http://wiki.ros.org/move_base) so please check their documentation for the installation.
@@ -67,7 +67,7 @@ $ sudo apt-get install ros-noetic-rqt
 $ rosrun rqt_graph rqt_graph
 ```
 
-![immagine](https://github.com/youssefattia98/surveillance_fsm_robot/blob/main/Digrams%20%26%20videos/rqt_grapgh.jpg)
+![immagine](https://github.com/youssefattia98/surveillance_fsm_robot/blob/main/docs/Digrams%20%26%20videos/rqt_grapgh.jpg)
 
 # 5) Working Hypothesis & Environment
 ## I) System’s Features
