@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>src.armcontrol &mdash; Surveillance robot with Description Logic &amp; Finite State Machine architecture. 2.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> Surveillance robot with Description Logic & Finite State Machine architecture.
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Surveillance robot with Description Logic & Finite State Machine architecture.</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">src.armcontrol</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for src.armcontrol</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">   This script is responsible for moving the arm of the robot in order to scan the room for markers.</span>
+<span class="sd">   It subscribes to the &#39;/m2wr/joint1_position_controller/state&#39; topic to get feedback on the current position of the arm and</span>
+<span class="sd">   publishes to the &#39;/m2wr/joint1_position_controller/command&#39; topic to control the movement of the arm.</span>
+<span class="sd">   The arm is moved from its initial position to -3.14 radians and then back to 1.5 radians before returning to its initial position at 0 radians.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">rospy</span>
+<span class="kn">from</span> <span class="nn">control_msgs.msg</span> <span class="kn">import</span> <span class="n">JointControllerState</span>
+<span class="kn">from</span> <span class="nn">std_msgs.msg</span> <span class="kn">import</span> <span class="n">Float64</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">   Global variable to store the current position of the arm.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="n">feedback</span> <span class="o">=</span> <span class="mi">0</span>
+
+<div class="viewcode-block" id="callback"><a class="viewcode-back" href="../../index.html#src.armcontrol.callback">[docs]</a><span class="k">def</span> <span class="nf">callback</span><span class="p">(</span><span class="n">msg</span><span class="p">):</span>
+<span class="w">   </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">   Global variable to store the current position of the arm.</span>
+<span class="sd">   &quot;&quot;&quot;</span>
+   <span class="k">global</span> <span class="n">feedback</span>
+   <span class="n">feedback</span> <span class="o">=</span> <span class="n">msg</span><span class="o">.</span><span class="n">process_value</span></div>
+
+<div class="viewcode-block" id="arm_move"><a class="viewcode-back" href="../../index.html#src.armcontrol.arm_move">[docs]</a><span class="k">def</span> <span class="nf">arm_move</span><span class="p">():</span>
+<span class="w">   </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">   Function for moving the robot arm in a scanning motion. The arm moves from its initial position to -3.14 radians and then back to 1.5 radians.</span>
+<span class="sd">   The position of the arm is published to the &#39;/m2wr/joint1_position_controller/command&#39; topic and is subscribed to the &#39;/m2wr/joint1_position_controller/state&#39;</span>
+<span class="sd">   topic to get feedback on the current position of the arm. The function is terminated after the arm has returned to its initial position.</span>
+<span class="sd">   &quot;&quot;&quot;</span>
+   <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Moving arm, to scan around the room for markers&quot;</span><span class="p">)</span>
+   <span class="n">pub</span> <span class="o">=</span> <span class="n">rospy</span><span class="o">.</span><span class="n">Publisher</span><span class="p">(</span><span class="s1">&#39;/m2wr/joint1_position_controller/command&#39;</span><span class="p">,</span> <span class="n">Float64</span><span class="p">,</span> <span class="n">queue_size</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+   <span class="n">rospy</span><span class="o">.</span><span class="n">Subscriber</span><span class="p">(</span><span class="s2">&quot;/m2wr/joint1_position_controller/state&quot;</span><span class="p">,</span> <span class="n">JointControllerState</span><span class="p">,</span> <span class="n">callback</span><span class="p">)</span>
+   <span class="n">rospy</span><span class="o">.</span><span class="n">init_node</span><span class="p">(</span><span class="s1">&#39;arm_controller&#39;</span><span class="p">,</span> <span class="n">anonymous</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+   <span class="n">pub</span><span class="o">.</span><span class="n">publish</span><span class="p">(</span><span class="o">-</span><span class="mf">3.14</span><span class="p">)</span>
+   <span class="k">while</span> <span class="n">feedback</span> <span class="o">&gt;</span> <span class="o">-</span><span class="mf">3.14</span><span class="p">:</span>
+      <span class="n">pub</span><span class="o">.</span><span class="n">publish</span><span class="p">(</span><span class="o">-</span><span class="mf">3.14</span><span class="p">)</span>
+   <span class="n">pub</span><span class="o">.</span><span class="n">publish</span><span class="p">(</span><span class="mf">1.5</span><span class="p">)</span>
+   <span class="k">while</span> <span class="n">feedback</span> <span class="o">&lt;</span> <span class="mf">1.5</span><span class="p">:</span>
+      <span class="n">pub</span><span class="o">.</span><span class="n">publish</span><span class="p">(</span><span class="mf">1.5</span><span class="p">)</span>
+   <span class="n">pub</span><span class="o">.</span><span class="n">publish</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span>
+   <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Scanned room, setting arm to initial position and terminating nodes&quot;</span><span class="p">)</span>
+   <span class="n">rospy</span><span class="o">.</span><span class="n">signal_shutdown</span><span class="p">(</span><span class="s1">&#39;marker_publisher&#39;</span><span class="p">)</span></div>
+
+   
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+   <span class="k">try</span><span class="p">:</span>
+      <span class="n">arm_move</span><span class="p">()</span>
+   <span class="k">except</span> <span class="n">rospy</span><span class="o">.</span><span class="n">ROSInterruptException</span><span class="p">:</span>
+      <span class="k">pass</span> 
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Youssef Attia.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

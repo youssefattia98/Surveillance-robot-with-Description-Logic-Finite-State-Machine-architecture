@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>src.Ontologybuild &mdash; Surveillance robot with Description Logic &amp; Finite State Machine architecture. 2.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> Surveillance robot with Description Logic & Finite State Machine architecture.
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Surveillance robot with Description Logic & Finite State Machine architecture.</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">src.Ontologybuild</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for src.Ontologybuild</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">.. module:: Ontologybuild</span>
+<span class="sd">:platform: Unix</span>
+<span class="sd">:synopsis: Python script for building an ontology representation of a map</span>
+
+<span class="sd">.. moduleauthor:: Youssef Attia youssef-attia@live.com</span>
+
+<span class="sd">This script loads the main ontology file topological_map.owl and adds information about rooms and doors to it. It disjoins the rooms and doors and adds a visitedAt property for each room, indicating the time that the robot visited it. The robot&#39;s current location is also updated in the ontology.</span>
+
+<span class="sd">The modified ontology is then saved to a separate file and a message is published to the mapsituation topic indicating that the map has been built. This modified ontology can then be used by the finitestates node.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">random</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">rospy</span>
+<span class="kn">import</span> <span class="nn">rospkg</span>
+<span class="kn">from</span> <span class="nn">armor_api.armor_client</span> <span class="kn">import</span> <span class="n">ArmorClient</span>
+<span class="kn">from</span> <span class="nn">std_msgs.msg</span> <span class="kn">import</span> <span class="n">Bool</span><span class="p">,</span> <span class="n">String</span>
+<span class="kn">from</span> <span class="nn">surveillance_fsm_robot.srv</span> <span class="kn">import</span> <span class="n">RoomInformation</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Inherit the package pass and setes the .owl file pass </span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="n">r</span> <span class="o">=</span> <span class="n">rospkg</span><span class="o">.</span><span class="n">RosPack</span><span class="p">()</span>
+<span class="n">path</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">get_path</span><span class="p">(</span><span class="s1">&#39;surveillance_fsm_robot&#39;</span><span class="p">)</span>
+<span class="n">oldontology</span> <span class="o">=</span> <span class="n">path</span> <span class="o">+</span> <span class="s2">&quot;/Ontologies/topological_map.owl&quot;</span>
+<span class="n">newontology</span> <span class="o">=</span> <span class="n">path</span> <span class="o">+</span> <span class="s2">&quot;/Ontologies/my_map.owl&quot;</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Global Variables used to set the random sleeping time between each visit, the *maxwait* is set as as the urgent room threshold is 7 and there is 4 wait periods so 7/4 = 1.75 sec</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="n">minwait</span> <span class="o">=</span> <span class="mf">0.0</span>
+<span class="n">maxwait</span> <span class="o">=</span> <span class="mf">1.75</span>
+<span class="n">markers</span> <span class="o">=</span> <span class="p">[]</span>
+
+
+<span class="k">def</span> <span class="nf">collectmarkers</span><span class="p">(</span><span class="n">string</span><span class="p">):</span>
+   <span class="k">global</span> <span class="n">markers</span>
+   <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">string</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">split</span><span class="p">():</span>
+      <span class="k">if</span> <span class="n">word</span><span class="o">.</span><span class="n">isdigit</span><span class="p">():</span>
+         <span class="n">num</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
+         <span class="k">if</span> <span class="mi">10</span> <span class="o">&lt;</span> <span class="n">num</span> <span class="o">&lt;</span> <span class="mi">18</span> <span class="ow">and</span> <span class="n">num</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">markers</span><span class="p">:</span>
+            <span class="n">markers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">num</span><span class="p">)</span>
+   
+
+<div class="viewcode-block" id="findtime"><a class="viewcode-back" href="../../index.html#src.Ontologybuild.findtime">[docs]</a><span class="k">def</span> <span class="nf">findtime</span><span class="p">(</span><span class="nb">list</span><span class="p">):</span>
+<span class="w">   </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">   Find the time in Unix format from a list returned by a query for a property from the Armor ontology library.</span>
+
+<span class="sd">   Args:</span>
+<span class="sd">   time (list): A list containing the time in the Armor response format, e.g. [&#39;&quot;1669241751&quot;^^xsd:long&#39;]</span>
+
+<span class="sd">   Returns:</span>
+<span class="sd">   time (string): The extracted time as a string, e.g. &quot;1665579740&quot;</span>
+<span class="sd">   &quot;&quot;&quot;</span>
+   <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">:</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">start</span> <span class="o">=</span> <span class="n">i</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">&#39;&quot;&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="s1">&#39;&quot;&#39;</span><span class="p">)</span>
+        <span class="n">end</span> <span class="o">=</span> <span class="n">i</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">&#39;&quot;&#39;</span><span class="p">,</span> <span class="n">start</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">i</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">end</span><span class="p">]</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">&quot;&quot;</span></div>
+
+<div class="viewcode-block" id="build_Ontology"><a class="viewcode-back" href="../../index.html#src.Ontologybuild.build_Ontology">[docs]</a><span class="k">def</span> <span class="nf">build_Ontology</span><span class="p">():</span>
+<span class="w">   </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">   Build an ontology by loading an existing ontology file, adding information about rooms and doors, updating the timestamps for when each room was visited, and saving the modified ontology to a new file.</span>
+
+<span class="sd">   Args:</span>
+<span class="sd">   None</span>
+
+<span class="sd">   Returns:</span>
+<span class="sd">   None</span>
+<span class="sd">   &quot;&quot;&quot;</span>
+
+   <span class="n">client</span> <span class="o">=</span> <span class="n">ArmorClient</span><span class="p">(</span><span class="s2">&quot;example&quot;</span><span class="p">,</span> <span class="s2">&quot;ontoRef&quot;</span><span class="p">)</span>
+   <span class="n">client</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="s1">&#39;LOAD&#39;</span><span class="p">,</span><span class="s1">&#39;FILE&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">,[</span><span class="n">oldontology</span><span class="p">,</span> <span class="s1">&#39;http://bnc/exp-rob-lab/2022-23&#39;</span><span class="p">,</span> <span class="s1">&#39;true&#39;</span><span class="p">,</span> <span class="s1">&#39;PELLET&#39;</span><span class="p">,</span> <span class="s1">&#39;false&#39;</span><span class="p">])</span>
+
+   <span class="n">rospy</span><span class="o">.</span><span class="n">wait_for_service</span><span class="p">(</span><span class="s1">&#39;/room_info&#39;</span><span class="p">)</span>
+   <span class="n">room_info_service</span> <span class="o">=</span> <span class="n">rospy</span><span class="o">.</span><span class="n">ServiceProxy</span><span class="p">(</span><span class="s1">&#39;/room_info&#39;</span><span class="p">,</span> <span class="n">RoomInformation</span><span class="p">)</span>
+   <span class="n">doors_rooms_lsit</span><span class="o">=</span> <span class="p">[]</span>
+   <span class="k">for</span> <span class="n">marker</span> <span class="ow">in</span> <span class="n">markers</span><span class="p">:</span>
+      <span class="n">response</span> <span class="o">=</span> <span class="n">room_info_service</span><span class="p">(</span><span class="n">marker</span><span class="p">)</span>
+      <span class="n">room_name</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">room</span>
+      <span class="n">doors_rooms_lsit</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">room_name</span><span class="p">)</span>
+      <span class="n">room_Xcord</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">x</span>
+      <span class="n">room_Ycord</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">y</span>
+      <span class="n">client</span><span class="o">.</span><span class="n">manipulation</span><span class="o">.</span><span class="n">add_dataprop_to_ind</span><span class="p">(</span><span class="s2">&quot;Xcoordinates&quot;</span><span class="p">,</span> <span class="n">room_name</span> <span class="p">,</span> <span class="s2">&quot;float&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">room_Xcord</span><span class="p">))</span>
+      <span class="n">client</span><span class="o">.</span><span class="n">manipulation</span><span class="o">.</span><span class="n">add_dataprop_to_ind</span><span class="p">(</span><span class="s2">&quot;Ycoordinates&quot;</span><span class="p">,</span> <span class="n">room_name</span> <span class="p">,</span> <span class="s2">&quot;float&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">room_Ycord</span><span class="p">))</span>
+      <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">response</span><span class="o">.</span><span class="n">connections</span><span class="p">:</span>
+         <span class="n">i</span><span class="o">.</span><span class="n">through_door</span>
+         <span class="n">doors_rooms_lsit</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="o">.</span><span class="n">through_door</span><span class="p">)</span>
+         <span class="n">client</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="s1">&#39;ADD&#39;</span><span class="p">,</span><span class="s1">&#39;OBJECTPROP&#39;</span><span class="p">,</span><span class="s1">&#39;IND&#39;</span><span class="p">,[</span><span class="s1">&#39;hasDoor&#39;</span><span class="p">,</span> <span class="n">room_name</span><span class="p">,</span> <span class="n">i</span><span class="o">.</span><span class="n">through_door</span><span class="p">])</span>
+
+   <span class="c1">#Disjointing the rooms and doors</span>
+   <span class="n">client</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="s1">&#39;DISJOINT&#39;</span><span class="p">,</span><span class="s1">&#39;IND&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">doors_rooms_lsit</span><span class="p">)))</span>
+   <span class="n">client</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="s1">&#39;REASON&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">,[</span><span class="s1">&#39;&#39;</span><span class="p">])</span>
+
+
+   <span class="c1">#Adding the visitedAt property for each room</span>
+   <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">doors_rooms_lsit</span><span class="p">)):</span>
+      <span class="k">if</span> <span class="n">i</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;R&#39;</span><span class="p">):</span>
+         <span class="n">client</span><span class="o">.</span><span class="n">manipulation</span><span class="o">.</span><span class="n">add_dataprop_to_ind</span><span class="p">(</span><span class="s2">&quot;visitedAt&quot;</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="s2">&quot;Long&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">())))</span>
+         <span class="n">rospy</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">minwait</span><span class="p">,</span> <span class="n">maxwait</span><span class="p">))</span>
+
+   <span class="c1">#Visit E</span>
+   <span class="c1">#Update robot isin property</span>
+   <span class="n">client</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="s1">&#39;REASON&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">,[</span><span class="s1">&#39;&#39;</span><span class="p">])</span>
+   <span class="n">client</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="s1">&#39;ADD&#39;</span><span class="p">,</span><span class="s1">&#39;OBJECTPROP&#39;</span><span class="p">,</span><span class="s1">&#39;IND&#39;</span><span class="p">,[</span><span class="s1">&#39;isIn&#39;</span><span class="p">,</span> <span class="s1">&#39;Robot1&#39;</span><span class="p">,</span> <span class="s1">&#39;E&#39;</span><span class="p">])</span>
+   <span class="c1">#Update robot now property</span>
+   <span class="n">client</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="s1">&#39;REASON&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">,[</span><span class="s1">&#39;&#39;</span><span class="p">])</span>
+   <span class="n">req</span><span class="o">=</span><span class="n">client</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="s1">&#39;QUERY&#39;</span><span class="p">,</span><span class="s1">&#39;DATAPROP&#39;</span><span class="p">,</span><span class="s1">&#39;IND&#39;</span><span class="p">,[</span><span class="s1">&#39;now&#39;</span><span class="p">,</span> <span class="s1">&#39;Robot1&#39;</span><span class="p">])</span>
+   <span class="n">oldtimerobot</span><span class="o">=</span><span class="n">findtime</span><span class="p">(</span><span class="n">req</span><span class="o">.</span><span class="n">queried_objects</span><span class="p">)</span>
+   <span class="n">newtime</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()))</span>
+   <span class="n">client</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="s1">&#39;REPLACE&#39;</span><span class="p">,</span><span class="s1">&#39;DATAPROP&#39;</span><span class="p">,</span><span class="s1">&#39;IND&#39;</span><span class="p">,[</span><span class="s1">&#39;now&#39;</span><span class="p">,</span> <span class="s1">&#39;Robot1&#39;</span><span class="p">,</span> <span class="s1">&#39;Long&#39;</span><span class="p">,</span> <span class="n">newtime</span><span class="p">,</span> <span class="n">oldtimerobot</span><span class="p">])</span>
+
+   <span class="n">client</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="s1">&#39;SAVE&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">,[</span><span class="n">newontology</span><span class="p">])</span></div>
+
+
+<div class="viewcode-block" id="main"><a class="viewcode-back" href="../../index.html#src.Ontologybuild.main">[docs]</a><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+<span class="w">   </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">   The main function of the script. It initializes a ROS node, creates a subscriber and a publisher, and sets up a service client. It then enters a loop that waits for a message to be received on the subscriber, processes the message, and publishes a response. The loop also sleeps for a random amount of time before processing the next message.</span>
+
+<span class="sd">   Args:</span>
+<span class="sd">   None</span>
+
+<span class="sd">   Returns:</span>
+<span class="sd">   None</span>
+<span class="sd">   &quot;&quot;&quot;</span>
+   <span class="n">rospy</span><span class="o">.</span><span class="n">init_node</span><span class="p">(</span><span class="s1">&#39;mapsituation_node&#39;</span><span class="p">,</span> <span class="n">anonymous</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+   <span class="n">subscriber</span><span class="o">=</span><span class="n">rospy</span><span class="o">.</span><span class="n">Subscriber</span><span class="p">(</span><span class="s2">&quot;/marker_publisher/chatter&quot;</span><span class="p">,</span> <span class="n">String</span><span class="p">,</span> <span class="n">collectmarkers</span><span class="p">)</span>
+   <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+      <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;waiting for markers, markers found:&quot;</span><span class="p">)</span>
+      <span class="nb">print</span><span class="p">(</span><span class="n">markers</span><span class="p">)</span>
+      <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">markers</span><span class="p">)</span><span class="o">&gt;=</span><span class="mi">7</span><span class="p">:</span>
+         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;I have all the markers, I will build the map&quot;</span><span class="p">)</span>
+         <span class="n">subscriber</span><span class="o">.</span><span class="n">unregister</span><span class="p">()</span>
+         <span class="n">pub</span> <span class="o">=</span> <span class="n">rospy</span><span class="o">.</span><span class="n">Publisher</span><span class="p">(</span><span class="s1">&#39;mapsituation&#39;</span><span class="p">,</span> <span class="n">Bool</span><span class="p">,</span> <span class="n">queue_size</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+         <span class="n">pub</span><span class="o">.</span><span class="n">publish</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+         <span class="n">build_Ontology</span><span class="p">()</span>
+         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Map built, I will shutdown the node&quot;</span><span class="p">)</span>
+         <span class="n">pub</span><span class="o">.</span><span class="n">publish</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+         <span class="n">rospy</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+         <span class="n">rospy</span><span class="o">.</span><span class="n">signal_shutdown</span><span class="p">(</span><span class="s1">&#39;mapsituation_node&#39;</span><span class="p">)</span>
+      <span class="n">rospy</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span></div>
+
+   
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+   <span class="k">try</span><span class="p">:</span>
+      <span class="n">main</span><span class="p">()</span>
+   <span class="k">except</span> <span class="n">rospy</span><span class="o">.</span><span class="n">ROSInterruptException</span><span class="p">:</span>
+      <span class="k">pass</span> 
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Youssef Attia.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

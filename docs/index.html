@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Welcome to Surveillance robot with Description Logic &amp; Finite State Machine architecture.’s documentation! &mdash; Surveillance robot with Description Logic &amp; Finite State Machine architecture. 2.0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="#" class="icon icon-home"> Surveillance robot with Description Logic & Finite State Machine architecture.
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">Welcome to Surveillance robot with Description Logic &amp; Finite State Machine architecture.’s documentation!</a></li>
+<li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
+<li><a class="reference internal" href="#module-src.armcontrol">Arm Control</a><ul>
+<li><a class="reference internal" href="#src.armcontrol.arm_move"><code class="docutils literal notranslate"><span class="pre">arm_move()</span></code></a></li>
+<li><a class="reference internal" href="#src.armcontrol.callback"><code class="docutils literal notranslate"><span class="pre">callback()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-src.Ontologybuild">Ontology Build</a><ul>
+<li><a class="reference internal" href="#src.Ontologybuild.build_Ontology"><code class="docutils literal notranslate"><span class="pre">build_Ontology()</span></code></a></li>
+<li><a class="reference internal" href="#src.Ontologybuild.findtime"><code class="docutils literal notranslate"><span class="pre">findtime()</span></code></a></li>
+<li><a class="reference internal" href="#src.Ontologybuild.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
+<li><a class="reference internal" href="#src.Ontologybuild.newontology"><code class="docutils literal notranslate"><span class="pre">newontology</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-src.finitestates">Finite state Machine</a><ul>
+<li><a class="reference internal" href="#src.finitestates.callbackbattery"><code class="docutils literal notranslate"><span class="pre">callbackbattery()</span></code></a></li>
+<li><a class="reference internal" href="#src.finitestates.callbackmap"><code class="docutils literal notranslate"><span class="pre">callbackmap()</span></code></a></li>
+<li><a class="reference internal" href="#src.finitestates.charging"><code class="docutils literal notranslate"><span class="pre">charging</span></code></a><ul>
+<li><a class="reference internal" href="#src.finitestates.charging.execute"><code class="docutils literal notranslate"><span class="pre">charging.execute()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#src.finitestates.findbt"><code class="docutils literal notranslate"><span class="pre">findbt()</span></code></a></li>
+<li><a class="reference internal" href="#src.finitestates.findindividual"><code class="docutils literal notranslate"><span class="pre">findindividual()</span></code></a></li>
+<li><a class="reference internal" href="#src.finitestates.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
+<li><a class="reference internal" href="#src.finitestates.move_base"><code class="docutils literal notranslate"><span class="pre">move_base()</span></code></a></li>
+<li><a class="reference internal" href="#src.finitestates.move_in_corridor"><code class="docutils literal notranslate"><span class="pre">move_in_corridor</span></code></a><ul>
+<li><a class="reference internal" href="#src.finitestates.move_in_corridor.execute"><code class="docutils literal notranslate"><span class="pre">move_in_corridor.execute()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#src.finitestates.moveto"><code class="docutils literal notranslate"><span class="pre">moveto()</span></code></a></li>
+<li><a class="reference internal" href="#src.finitestates.newontology"><code class="docutils literal notranslate"><span class="pre">newontology</span></code></a></li>
+<li><a class="reference internal" href="#src.finitestates.scan"><code class="docutils literal notranslate"><span class="pre">scan()</span></code></a></li>
+<li><a class="reference internal" href="#src.finitestates.set_coordinates"><code class="docutils literal notranslate"><span class="pre">set_coordinates()</span></code></a></li>
+<li><a class="reference internal" href="#src.finitestates.urgentupdate"><code class="docutils literal notranslate"><span class="pre">urgentupdate()</span></code></a></li>
+<li><a class="reference internal" href="#src.finitestates.visitroom"><code class="docutils literal notranslate"><span class="pre">visitroom</span></code></a><ul>
+<li><a class="reference internal" href="#src.finitestates.visitroom.execute"><code class="docutils literal notranslate"><span class="pre">visitroom.execute()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#src.finitestates.waiting_for_map"><code class="docutils literal notranslate"><span class="pre">waiting_for_map</span></code></a><ul>
+<li><a class="reference internal" href="#src.finitestates.waiting_for_map.execute"><code class="docutils literal notranslate"><span class="pre">waiting_for_map.execute()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-src.batterynode">Battery</a><ul>
+<li><a class="reference internal" href="#src.batterynode.cancel_move_base_goal"><code class="docutils literal notranslate"><span class="pre">cancel_move_base_goal()</span></code></a></li>
+<li><a class="reference internal" href="#src.batterynode.talker"><code class="docutils literal notranslate"><span class="pre">talker()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-src.corr_server">Cooridnates</a><ul>
+<li><a class="reference internal" href="#src.corr_server.SSR"><code class="docutils literal notranslate"><span class="pre">SSR()</span></code></a></li>
+<li><a class="reference internal" href="#src.corr_server.coordinates_srv"><code class="docutils literal notranslate"><span class="pre">coordinates_srv()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">Surveillance robot with Description Logic & Finite State Machine architecture.</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="#" class="icon icon-home"></a></li>
+      <li class="breadcrumb-item active">Welcome to Surveillance robot with Description Logic &amp; Finite State Machine architecture.’s documentation!</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="welcome-to-surveillance-robot-with-description-logic-finite-state-machine-architecture-s-documentation">
+<h1>Welcome to Surveillance robot with Description Logic &amp; Finite State Machine architecture.’s documentation!<a class="headerlink" href="#welcome-to-surveillance-robot-with-description-logic-finite-state-machine-architecture-s-documentation" title="Permalink to this heading"></a></h1>
+<div class="toctree-wrapper compound">
+</div>
+</div>
+<div class="section" id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this heading"></a></h1>
+<ul class="simple">
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
+<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
+<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
+</ul>
+</div>
+<div class="section" id="module-src.armcontrol">
+<span id="arm-control"></span><h1>Arm Control<a class="headerlink" href="#module-src.armcontrol" title="Permalink to this heading"></a></h1>
+<p>This script is responsible for moving the arm of the robot in order to scan the room for markers.
+It subscribes to the ‘/m2wr/joint1_position_controller/state’ topic to get feedback on the current position of the arm and
+publishes to the ‘/m2wr/joint1_position_controller/command’ topic to control the movement of the arm.
+The arm is moved from its initial position to -3.14 radians and then back to 1.5 radians before returning to its initial position at 0 radians.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="src.armcontrol.arm_move">
+<span class="sig-prename descclassname"><span class="pre">src.armcontrol.</span></span><span class="sig-name descname"><span class="pre">arm_move</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/armcontrol.html#arm_move"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.armcontrol.arm_move" title="Permalink to this definition"></a></dt>
+<dd><p>Function for moving the robot arm in a scanning motion. The arm moves from its initial position to -3.14 radians and then back to 1.5 radians.
+The position of the arm is published to the ‘/m2wr/joint1_position_controller/command’ topic and is subscribed to the ‘/m2wr/joint1_position_controller/state’
+topic to get feedback on the current position of the arm. The function is terminated after the arm has returned to its initial position.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.armcontrol.callback">
+<span class="sig-prename descclassname"><span class="pre">src.armcontrol.</span></span><span class="sig-name descname"><span class="pre">callback</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/armcontrol.html#callback"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.armcontrol.callback" title="Permalink to this definition"></a></dt>
+<dd><p>Global variable to store the current position of the arm.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-src.Ontologybuild">
+<span id="ontology-build"></span><h1>Ontology Build<a class="headerlink" href="#module-src.Ontologybuild" title="Permalink to this heading"></a></h1>
+<span class="target" id="module-Ontologybuild"></span><dl class="field-list simple">
+<dt class="field-odd">platform</dt>
+<dd class="field-odd"><p>Unix</p>
+</dd>
+<dt class="field-even">synopsis</dt>
+<dd class="field-even"><p>Python script for building an ontology representation of a map</p>
+</dd>
+</dl>
+<p>This script loads the main ontology file topological_map.owl and adds information about rooms and doors to it. It disjoins the rooms and doors and adds a visitedAt property for each room, indicating the time that the robot visited it. The robot’s current location is also updated in the ontology.</p>
+<p>The modified ontology is then saved to a separate file and a message is published to the mapsituation topic indicating that the map has been built. This modified ontology can then be used by the finitestates node.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="src.Ontologybuild.build_Ontology">
+<span class="sig-prename descclassname"><span class="pre">src.Ontologybuild.</span></span><span class="sig-name descname"><span class="pre">build_Ontology</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/Ontologybuild.html#build_Ontology"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.Ontologybuild.build_Ontology" title="Permalink to this definition"></a></dt>
+<dd><p>Build an ontology by loading an existing ontology file, adding information about rooms and doors, updating the timestamps for when each room was visited, and saving the modified ontology to a new file.</p>
+<p>Args:
+None</p>
+<p>Returns:
+None</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.Ontologybuild.findtime">
+<span class="sig-prename descclassname"><span class="pre">src.Ontologybuild.</span></span><span class="sig-name descname"><span class="pre">findtime</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/Ontologybuild.html#findtime"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.Ontologybuild.findtime" title="Permalink to this definition"></a></dt>
+<dd><p>Find the time in Unix format from a list returned by a query for a property from the Armor ontology library.</p>
+<p>Args:
+time (list): A list containing the time in the Armor response format, e.g. [‘“1669241751”^^xsd:long’]</p>
+<p>Returns:
+time (string): The extracted time as a string, e.g. “1665579740”</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.Ontologybuild.main">
+<span class="sig-prename descclassname"><span class="pre">src.Ontologybuild.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/Ontologybuild.html#main"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.Ontologybuild.main" title="Permalink to this definition"></a></dt>
+<dd><p>The main function of the script. It initializes a ROS node, creates a subscriber and a publisher, and sets up a service client. It then enters a loop that waits for a message to be received on the subscriber, processes the message, and publishes a response. The loop also sleeps for a random amount of time before processing the next message.</p>
+<p>Args:
+None</p>
+<p>Returns:
+None</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="src.Ontologybuild.newontology">
+<span class="sig-prename descclassname"><span class="pre">src.Ontologybuild.</span></span><span class="sig-name descname"><span class="pre">newontology</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/root/ros_ws/src/surveillance_fsm_robot/Ontologies/my_map.owl'</span></em><a class="headerlink" href="#src.Ontologybuild.newontology" title="Permalink to this definition"></a></dt>
+<dd><p>Global Variables used to set the random sleeping time between each visit, the <em>maxwait</em> is set as as the urgent room threshold is 7 and there is 4 wait periods so 7/4 = 1.75 sec</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-src.finitestates">
+<span id="finite-state-machine"></span><h1>Finite state Machine<a class="headerlink" href="#module-src.finitestates" title="Permalink to this heading"></a></h1>
+<span class="target" id="module-finitestates"></span><dl class="field-list simple">
+<dt class="field-odd">platform</dt>
+<dd class="field-odd"><p>Unix</p>
+</dd>
+<dt class="field-even">synopsis</dt>
+<dd class="field-even"><p>Python script for implementing a finite state machine for a robot</p>
+</dd>
+</dl>
+<p>This script handles the main behavior of a robot by using a finite state machine. It waits for the ontology (map) to be built, and then enters a loop that transitions between three states: move_in_corridor, visitroom, and charging.</p>
+<p>In the move_in_corridor state, the robot moves randomly in the corridors and waits for a certain amount of time if the battery is not low and there are no urgent rooms to visit. If the battery is low, the robot transitions to the charging state, in which it stays in room E until the battery is charged. If there is an urgent room to visit while the battery is charged, the robot transitions to the visitroom state and stays there for a certain amount of time.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="src.finitestates.callbackbattery">
+<span class="sig-prename descclassname"><span class="pre">src.finitestates.</span></span><span class="sig-name descname"><span class="pre">callbackbattery</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/finitestates.html#callbackbattery"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.finitestates.callbackbattery" title="Permalink to this definition"></a></dt>
+<dd><p>This function is a callback for the batterylevel topic. It updates the batflag global variable based on the state of the battery.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>Bool</em>) – The data received in the message, indicating the state of the battery.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.finitestates.callbackmap">
+<span class="sig-prename descclassname"><span class="pre">src.finitestates.</span></span><span class="sig-name descname"><span class="pre">callbackmap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/finitestates.html#callbackmap"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.finitestates.callbackmap" title="Permalink to this definition"></a></dt>
+<dd><p>This function is a callback for the mapsituation topic. It updates the mapflag global variable based on the state of the map.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>Bool</em>) – The data received in the message, indicating the state of the map.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="src.finitestates.charging">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.finitestates.</span></span><span class="sig-name descname"><span class="pre">charging</span></span><a class="reference internal" href="_modules/src/finitestates.html#charging"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.finitestates.charging" title="Permalink to this definition"></a></dt>
+<dd><p>Class for state charging in which the robot moves to room E and stays there until the battery is charged.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>keepcharging</em> if the battery is still low, <em>battfull</em> if the battery is fully charged, indicated by the global variable <em>batflag</em> being set to True.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="src.finitestates.charging.execute">
+<span class="sig-name descname"><span class="pre">execute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">userdata</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/finitestates.html#charging.execute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.finitestates.charging.execute" title="Permalink to this definition"></a></dt>
+<dd><p>Called when executing a state.
+In the base class this raises a NotImplementedError.</p>
+<p>&#64;type ud: L{UserData} structure
+&#64;param ud: Userdata for the scope in which this state is executing</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.finitestates.findbt">
+<span class="sig-prename descclassname"><span class="pre">src.finitestates.</span></span><span class="sig-name descname"><span class="pre">findbt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/finitestates.html#findbt"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.finitestates.findbt" title="Permalink to this definition"></a></dt>
+<dd><p>Function for extracting data between quotation marks from a list.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>lst</strong> (<em>list</em>) – A list containing strings with data enclosed in quotation marks.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The extracted data.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.finitestates.findindividual">
+<span class="sig-prename descclassname"><span class="pre">src.finitestates.</span></span><span class="sig-name descname"><span class="pre">findindividual</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/finitestates.html#findindividual"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.finitestates.findindividual" title="Permalink to this definition"></a></dt>
+<dd><p>Function for finding the individual in a list from the return of a qureied proprity from armor.</p>
+<p>This function is used to extract the individual from the format returned by the ArmorClient query, which is a list containing the individual in a URI format.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>Individual</strong> (<em>list</em>) – The list containing the individual in the armor response format, ex. [‘<a class="reference external" href="http://bnc/exp-rob-lab/2022-23#R1">http://bnc/exp-rob-lab/2022-23#R1</a>’]</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The individual extracted and changed to a string, ex. “R1”</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Individual(string)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.finitestates.main">
+<span class="sig-prename descclassname"><span class="pre">src.finitestates.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/finitestates.html#main"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.finitestates.main" title="Permalink to this definition"></a></dt>
+<dd><p>This function initializes the ROS node and creates a finite state machine using the <a class="reference external" href="http://wiki.ros.org/smach">SMACH package:</a>.
+It also subscribes to the ‘batterylevel’ and ‘mapsituation’ topics.”</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.finitestates.move_base">
+<span class="sig-prename descclassname"><span class="pre">src.finitestates.</span></span><span class="sig-name descname"><span class="pre">move_base</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">desired</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/finitestates.html#move_base"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.finitestates.move_base" title="Permalink to this definition"></a></dt>
+<dd><p>This function moves the robot to the specified location.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>desired</strong> (<em>str</em>) – The name of the location to move the robot to.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The result of the cordinates_srv service call, indicating whether the target was reached successfully.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>rt</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="src.finitestates.move_in_corridor">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.finitestates.</span></span><span class="sig-name descname"><span class="pre">move_in_corridor</span></span><a class="reference internal" href="_modules/src/finitestates.html#move_in_corridor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.finitestates.move_in_corridor" title="Permalink to this definition"></a></dt>
+<dd><p>Class representing the state in which the robot checks its battery level and the presence of an urgent room. Depending on the results of these checks, the robot will either continue to move randomly in the corridors, enter the charging state, or visit an urgent room.</p>
+<p>Attributes:
+outcomes (list): possible outcomes of this state, including ‘keepmoving’ if the battery is not low and there is no urgent room, ‘battlow’ if the battery is low, and ‘urgentvisit’ if there is an urgent room.</p>
+<p>Methods:
+execute(self, userdata): carries out the actions associated with this state, including checking the battery level and presence of an urgent room, and returning the appropriate outcome.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="src.finitestates.move_in_corridor.execute">
+<span class="sig-name descname"><span class="pre">execute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">userdata</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/finitestates.html#move_in_corridor.execute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.finitestates.move_in_corridor.execute" title="Permalink to this definition"></a></dt>
+<dd><p>Called when executing a state.
+In the base class this raises a NotImplementedError.</p>
+<p>&#64;type ud: L{UserData} structure
+&#64;param ud: Userdata for the scope in which this state is executing</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.finitestates.moveto">
+<span class="sig-prename descclassname"><span class="pre">src.finitestates.</span></span><span class="sig-name descname"><span class="pre">moveto</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">newloction</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/finitestates.html#moveto"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.finitestates.moveto" title="Permalink to this definition"></a></dt>
+<dd><p>This function moves the robot to a new location specified in the argument. It determines the current location of the robot and updates the
+isIn property accordingly. The function also updates the now property and the visitedAt property of the new location.</p>
+<p>NOTE: This function is not generic and is specific to the current ontology and its map architecture. To make it more general, the connectedTo
+property can be utilized.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>new_location</strong> (<em>str</em>) – The location that the robot should be moved to.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="src.finitestates.newontology">
+<span class="sig-prename descclassname"><span class="pre">src.finitestates.</span></span><span class="sig-name descname"><span class="pre">newontology</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/root/ros_ws/src/surveillance_fsm_robot/Ontologies/my_map.owl'</span></em><a class="headerlink" href="#src.finitestates.newontology" title="Permalink to this definition"></a></dt>
+<dd><p>Global Variables used to understand the map, battery and urgent room situation. Also, set the sleeping time in each room.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.finitestates.scan">
+<span class="sig-prename descclassname"><span class="pre">src.finitestates.</span></span><span class="sig-name descname"><span class="pre">scan</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/finitestates.html#scan"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.finitestates.scan" title="Permalink to this definition"></a></dt>
+<dd><p>Function for scanning the environment by rotating the robot in place.</p>
+<p>This function rotates the robot in place by publishing a Twist message with a positive angular.z value to the ‘cmd_vel’ topic. It does this for 10 iterations at a rate of 10Hz, and then sleeps for 5 seconds.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>None</strong> – </p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.finitestates.set_coordinates">
+<span class="sig-prename descclassname"><span class="pre">src.finitestates.</span></span><span class="sig-name descname"><span class="pre">set_coordinates</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/finitestates.html#set_coordinates"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.finitestates.set_coordinates" title="Permalink to this definition"></a></dt>
+<dd><p>Sets the global variable ‘coordinates’ to a dictionary of the locations and their corresponding X and Y coordinates.</p>
+<p>First, a list of room names is created. Then, for each room in the list, the Xcoordinates and Ycoordinates of the room are queried using the ArmorClient and stored as variables ‘X’ and ‘Y’, respectively. These values are then added to the ‘coordinates’ dictionary as a key-value pair with the room name as the key and a dictionary of the X and Y coordinates as the value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>void</strong> – </p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>void</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.finitestates.urgentupdate">
+<span class="sig-prename descclassname"><span class="pre">src.finitestates.</span></span><span class="sig-name descname"><span class="pre">urgentupdate</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/finitestates.html#urgentupdate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.finitestates.urgentupdate" title="Permalink to this definition"></a></dt>
+<dd><p>Check if there is an urgent room and set the global variable <cite>urgentflag</cite>, also returns the nearby urgent room.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The nearby urgent room according to the robot position in the corridors.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="src.finitestates.visitroom">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.finitestates.</span></span><span class="sig-name descname"><span class="pre">visitroom</span></span><a class="reference internal" href="_modules/src/finitestates.html#visitroom"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.finitestates.visitroom" title="Permalink to this definition"></a></dt>
+<dd><p>Class for state visitroom in which the robot checks the nearby urgent rooms and visit them for a certain amount of time. This state is only reached if the battery is charged and there is an urgent room.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>keepvisiting if the battery is still charged and there are nearby urgent rooms, noturgentvisit if all the nearby urgent rooms have been visited,
+battlow if the battery is low.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="src.finitestates.visitroom.execute">
+<span class="sig-name descname"><span class="pre">execute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">userdata</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/finitestates.html#visitroom.execute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.finitestates.visitroom.execute" title="Permalink to this definition"></a></dt>
+<dd><p>Called when executing a state.
+In the base class this raises a NotImplementedError.</p>
+<p>&#64;type ud: L{UserData} structure
+&#64;param ud: Userdata for the scope in which this state is executing</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="src.finitestates.waiting_for_map">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.finitestates.</span></span><span class="sig-name descname"><span class="pre">waiting_for_map</span></span><a class="reference internal" href="_modules/src/finitestates.html#waiting_for_map"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.finitestates.waiting_for_map" title="Permalink to this definition"></a></dt>
+<dd><p>Class for state waiting_for_map in which the robot waits for the mapflag to be True and then loads the ontology.</p>
+<p>This state has two possible outcomes:</p>
+<p>keepwaiting if the map is not yet loaded
+maploaded if the map has been successfully loaded
+Once the map has been loaded, the set_coordinates function is called to initialize the coordinates dictionary with the coordinates of each room in the map. The robot is then moved to room E.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="src.finitestates.waiting_for_map.execute">
+<span class="sig-name descname"><span class="pre">execute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">userdata</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/finitestates.html#waiting_for_map.execute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.finitestates.waiting_for_map.execute" title="Permalink to this definition"></a></dt>
+<dd><p>Called when executing a state.
+In the base class this raises a NotImplementedError.</p>
+<p>&#64;type ud: L{UserData} structure
+&#64;param ud: Userdata for the scope in which this state is executing</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-src.batterynode">
+<span id="battery"></span><h1>Battery<a class="headerlink" href="#module-src.batterynode" title="Permalink to this heading"></a></h1>
+<p>Publishes the battery state to the topic batterylevel.</p>
+<p>If the battery is low, it cancels any existing goals and publishes 0 to the batterylevel topic.
+After a random sleep time between charegedtime_min and charegedtime_max, it publishes 1 to the batterylevel topic, indicating that the battery is charged.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="src.batterynode.cancel_move_base_goal">
+<span class="sig-prename descclassname"><span class="pre">src.batterynode.</span></span><span class="sig-name descname"><span class="pre">cancel_move_base_goal</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/batterynode.html#cancel_move_base_goal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.batterynode.cancel_move_base_goal" title="Permalink to this definition"></a></dt>
+<dd><p>Cancels any existing goals for the move_base action server.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.batterynode.talker">
+<span class="sig-prename descclassname"><span class="pre">src.batterynode.</span></span><span class="sig-name descname"><span class="pre">talker</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/batterynode.html#talker"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.batterynode.talker" title="Permalink to this definition"></a></dt>
+<dd><p>Function to initiate a topic <em>batterylevel</em> to publish the battery situation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>void</strong> – </p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>void</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-src.corr_server">
+<span id="cooridnates"></span><h1>Cooridnates<a class="headerlink" href="#module-src.corr_server" title="Permalink to this heading"></a></h1>
+<span class="target" id="module-coordinate_controller"></span><dl class="field-list simple">
+<dt class="field-odd">platform</dt>
+<dd class="field-odd"><p>Unix</p>
+</dd>
+<dt class="field-even">synopsis</dt>
+<dd class="field-even"><p>Python module for providing a ROS service that moves the robot to the specified coordinates.</p>
+</dd>
+</dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="src.corr_server.SSR">
+<span class="sig-prename descclassname"><span class="pre">src.corr_server.</span></span><span class="sig-name descname"><span class="pre">SSR</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">req</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/corr_server.html#SSR"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.corr_server.SSR" title="Permalink to this definition"></a></dt>
+<dd><p>Function to move the robot to the specified coordinates.</p>
+<p>Copy code
+:param req: A service request containing the x and y coordinates of the target location.
+:type req: Cordinates_srv</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A status code indicating whether the robot reached the target location (1) or not (-1).</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.corr_server.coordinates_srv">
+<span class="sig-prename descclassname"><span class="pre">src.corr_server.</span></span><span class="sig-name descname"><span class="pre">coordinates_srv</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/corr_server.html#coordinates_srv"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.corr_server.coordinates_srv" title="Permalink to this definition"></a></dt>
+<dd><p>Function to initialize the ROS node and create the Cordinates_srv service.</p>
+</dd></dl>
+
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Youssef Attia.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

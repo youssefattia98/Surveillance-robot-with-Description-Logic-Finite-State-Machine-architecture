@@ -291,15 +291,15 @@ def set_coordinates():
     Returns:
         void
     """
-  global coordinates
-  client = ArmorClient("example", "ontoRef")
-  list_of_rooms = ['R1', 'R2', 'R3', 'R4', 'C1', 'C2', 'E']
-  for i in list_of_rooms:
-    req=client.call('QUERY','DATAPROP','IND',['Xcoordinates', i])
-    X=float(findbt(req.queried_objects))
-    req=client.call('QUERY','DATAPROP','IND',['Ycoordinates', i])
-    Y=float(findbt(req.queried_objects))
-    coordinates[i] = {'X': X, 'Y': Y}
+    global coordinates
+    client = ArmorClient("example", "ontoRef")
+    list_of_rooms = ['R1', 'R2', 'R3', 'R4', 'C1', 'C2', 'E']
+    for i in list_of_rooms:
+        req=client.call('QUERY','DATAPROP','IND',['Xcoordinates', i])
+        X=float(findbt(req.queried_objects))
+        req=client.call('QUERY','DATAPROP','IND',['Ycoordinates', i])
+        Y=float(findbt(req.queried_objects))
+        coordinates[i] = {'X': X, 'Y': Y}
 
 class waiting_for_map(smach.State):
     """
