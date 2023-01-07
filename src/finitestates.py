@@ -1,16 +1,14 @@
 #!/usr/bin/env python
 """
 .. module:: finitestates
-    :platform: Unix
-    :synopsis: Python module for running the finite state machine of the robot
+:platform: Unix
+:synopsis: Python script for implementing a finite state machine for a robot
 
 .. moduleauthor:: Youssef Attia youssef-attia@live.com
-This node handles the main robot behavior, first it waits for the ontology (map) to be built.  
 
-Then starting from the (move_in_corridor) state it checks if the battery is not low or there is no urgent room, it moves randomly in the two corridors and wait for some time.  
+This script handles the main behavior of a robot by using a finite state machine. It waits for the ontology (map) to be built, and then enters a loop that transitions between three states: move_in_corridor, visitroom, and charging.
 
-However, if a battery is low it goes to the state (charging), which keeps moves the robot in room E and stayes there untill the battery is charged
-Also, if there is an urgent room while the battery is charged the robot visits it and stays there for some time (visitroom state).
+In the move_in_corridor state, the robot moves randomly in the corridors and waits for a certain amount of time if the battery is not low and there are no urgent rooms to visit. If the battery is low, the robot transitions to the charging state, in which it stays in room E until the battery is charged. If there is an urgent room to visit while the battery is charged, the robot transitions to the visitroom state and stays there for a certain amount of time.
 """
 
 
@@ -49,13 +47,13 @@ coordinates = {}
 
 def callbackbattery(data):
     """
-    Function is the callback for the topic *batterylevel* and sets the global varible *batflag*.  
+    This function is a callback for the batterylevel topic. It updates the batflag global variable based on the state of the battery.
 
     Args:
-        Battery state(class Bool): The data recived from the message.  
+        data (Bool): The data received in the message, indicating the state of the battery.
 
     Returns:
-        void
+        None
     """
     global batflag
     if data.data == 0:
@@ -63,13 +61,13 @@ def callbackbattery(data):
 
 def callbackmap(data):
     """
-    Function is the callback for the topic *mapsituation* and sets the global varible *mapflag*.  
+    This function is a callback for the mapsituation topic. It updates the mapflag global variable based on the state of the map.
 
     Args:
-        Map state(class Bool): The data recived from the message.  
-        
+        data (Bool): The data received in the message, indicating the state of the map.
+
     Returns:
-        void
+        None
     """
     global mapflag
     if data.data == 1:
@@ -78,6 +76,15 @@ def callbackmap(data):
         mapflag = 0
 
 def move_base(desired):
+    """
+    This function moves the robot to the specified location.
+
+    Args:
+        desired (str): The name of the location to move the robot to.
+
+    Returns:
+        rt: The result of the cordinates_srv service call, indicating whether the target was reached successfully.
+    """
     cordinates_srv = rospy.ServiceProxy('cordinates_srv', Cordinates_srv)
     rt=cordinates_srv(coordinates[desired]['X'] , coordinates[desired]['Y'])
     if rt.return_ == 1:
@@ -89,13 +96,10 @@ def move_base(desired):
 
 def urgentupdate():
     """
-    Function for checking if there is an urgent room to set the global *urgentflag*, also returns the nearby urgent room.  
-
-    Args:
-        void  
-
+    Check if there is an urgent room and set the global variable `urgentflag`, also returns the nearby urgent room.
+    
     Returns:
-        Urgent room(string): The nearby urgent room according to the robot position in the corridors.
+        str: The nearby urgent room according to the robot position in the corridors.
     """
     global urgentflag
     tobetrturned = '0'
@@ -144,13 +148,15 @@ def urgentupdate():
 
 def findindividual(list):
     """
-    Function for finding the individual in a list from the return of a qureied proprity from armor.  
+    Function for finding the individual in a list from the return of a qureied proprity from armor.
+
+    This function is used to extract the individual from the format returned by the ArmorClient query, which is a list containing the individual in a URI format.
 
     Args:
-        Individual(list): The individual in the armor resonse format ex. *['<http://bnc/exp-rob-lab/2022-23#R1>']*  
+        Individual(list): The list containing the individual in the armor response format, ex. ['http://bnc/exp-rob-lab/2022-23#R1']
 
     Returns:
-        Individual(string): The individual extarcted and changed to a string *ex. "R1"*
+        Individual(string): The individual extracted and changed to a string, ex. "R1"
     """
     for i in list:
         if "R1" in i:
@@ -169,6 +175,15 @@ def findindividual(list):
             return 'E'
 
 def findbt(list):
+    """
+    Function for extracting data between quotation marks from a list. 
+
+    Args:
+        lst (list): A list containing strings with data enclosed in quotation marks. 
+
+    Returns:
+        str: The extracted data. 
+    """
     for i in list:
         try:
             start = i.index('"') + len('"')
@@ -179,18 +194,17 @@ def findbt(list):
 
 def moveto(newloction):
     """
-    Function for changing to robot *isIn* property according to where is robot is. First it quires the robot location if the robot was in
-    R1 or R2 it moves it to C1 else if the robot was in R3 or R4 it moves it to C2. And from there the robot can reach the nearby urgent rooms,
-    the E charging room or go to the other corridor. Furthermore, updates the robot *now* property and also the location *visitedAt* property.  
+    This function moves the robot to a new location specified in the argument. It determines the current location of the robot and updates the
+    isIn property accordingly. The function also updates the now property and the visitedAt property of the new location.
 
-    NOTE: This function is not generic, by other means can not be used for other ontologies as it depends mainly on the architecture of the currently
-    used map. However, using the *connectedTo* property a more general function can be implemented.  
+    NOTE: This function is not generic and is specific to the current ontology and its map architecture. To make it more general, the connectedTo
+    property can be utilized.
 
     Args:
-        New loction(string)  
+        new_location (str): The location that the robot should be moved to.
 
     Returns:
-        void
+        None
     """
     client = ArmorClient("example", "ontoRef")
     #Update robot isin property
@@ -239,29 +253,44 @@ def moveto(newloction):
         client.call('REASON','','',[''])
 
 def scan():
-    # Create a publisher for the cmd_vel topic
+    """
+    Function for scanning the environment by rotating the robot in place.
+
+    This function rotates the robot in place by publishing a Twist message with a positive angular.z value to the 'cmd_vel' topic. It does this for 10 iterations at a rate of 10Hz, and then sleeps for 5 seconds.
+
+    Args:
+        None
+
+    Returns:
+        None
+    """
     print("Scanning..")
     pub = rospy.Publisher('cmd_vel', Twist, queue_size=10)
-
-    # Create a Twist message and fill it in with the desired values
     twist_msg = Twist()
     twist_msg.linear.x = 0.0
     twist_msg.linear.y = 0.0
     twist_msg.linear.z = 0.0
     twist_msg.angular.x = 0.0
     twist_msg.angular.y = 0.0
-    twist_msg.angular.z = 1.0  # Set the angular velocity to 1.0 radians/second
-
-    # Set the rate at which we will publish the Twist message
-    rate = rospy.Rate(10)  # 10Hz
-
-    # Publish the Twist message for 1 second (10 * 0.1 seconds)
+    twist_msg.angular.z = 1.0
+    rate = rospy.Rate(10)
     for i in range(10):
         pub.publish(twist_msg)
         rate.sleep()
     rospy.sleep(5)
 
 def set_coordinates():
+    """
+    Sets the global variable 'coordinates' to a dictionary of the locations and their corresponding X and Y coordinates.
+
+    First, a list of room names is created. Then, for each room in the list, the Xcoordinates and Ycoordinates of the room are queried using the ArmorClient and stored as variables 'X' and 'Y', respectively. These values are then added to the 'coordinates' dictionary as a key-value pair with the room name as the key and a dictionary of the X and Y coordinates as the value.
+
+    Args:
+        void
+
+    Returns:
+        void
+    """
   global coordinates
   client = ArmorClient("example", "ontoRef")
   list_of_rooms = ['R1', 'R2', 'R3', 'R4', 'C1', 'C2', 'E']
@@ -274,11 +303,13 @@ def set_coordinates():
 
 class waiting_for_map(smach.State):
     """
-    Class for state *waiting_for_map* in which the robot waits for the *mapflag* to be True and then load the ontlogy.  
+    Class for state waiting_for_map in which the robot waits for the mapflag to be True and then loads the ontology.
 
-    Returns:
-        *keepwaiting* if map is not loaded and *maploaded* if the map is loaded.  
-        
+    This state has two possible outcomes:
+
+    keepwaiting if the map is not yet loaded
+    maploaded if the map has been successfully loaded
+    Once the map has been loaded, the set_coordinates function is called to initialize the coordinates dictionary with the coordinates of each room in the map. The robot is then moved to room E.
     """
     
     def __init__(self):
@@ -299,10 +330,13 @@ class waiting_for_map(smach.State):
 
 class move_in_corridor(smach.State):
     """
-    Class for state *move_in_corridor* in which the robot checks if the battery is not low or there is no urgent room, it moves randomly in the two corridors and wait for some time.  
+    Class representing the state in which the robot checks its battery level and the presence of an urgent room. Depending on the results of these checks, the robot will either continue to move randomly in the corridors, enter the charging state, or visit an urgent room.
 
-    Returns:
-        *keepmoving* if the battery is not low and there is no urgent room, *battlow* if the batery is low and *urgentvisit* if there is an urgent room
+    Attributes:
+    outcomes (list): possible outcomes of this state, including 'keepmoving' if the battery is not low and there is no urgent room, 'battlow' if the battery is low, and 'urgentvisit' if there is an urgent room.
+
+    Methods:
+    execute(self, userdata): carries out the actions associated with this state, including checking the battery level and presence of an urgent room, and returning the appropriate outcome.
     """
     
     def __init__(self):
@@ -328,11 +362,12 @@ class move_in_corridor(smach.State):
 
 class charging(smach.State):
     """
-    Class for state *charging* in which the moves to room E and stayes there untill the battery is charged.  
+    Class for state charging in which the robot moves to room E and stays there until the battery is charged.
 
     Returns:
-        *keepcharging* if the battery is still low, *battfull* if the batery is fully charged by other means the *batflag* is True.
+        *keepcharging* if the battery is still low, *battfull* if the battery is fully charged, indicated by the global variable *batflag* being set to True.
     """
+
     
     def __init__(self):
         smach.State.__init__(self, outcomes=['keepcharging','battfull'])
@@ -351,13 +386,11 @@ class charging(smach.State):
 
 class visitroom(smach.State):
     """
-    Class for state *visitroom* in which the robot checks the nearby urgent rooms and visit them staying some time. Only if the battery is charged.  
+    Class for state visitroom in which the robot checks the nearby urgent rooms and visit them for a certain amount of time. This state is only reached if the battery is charged and there is an urgent room.
 
     Returns:
-        *keepvisiting* if the battery is still charged and there are nearby urgent room,  
-        *noturgentvisit* if there is not urgent room by other means: visited all the nearby urgent rooms,  
-        *battlow* if the battery is low.  
-
+        keepvisiting if the battery is still charged and there are nearby urgent rooms, noturgentvisit if all the nearby urgent rooms have been visited,
+        battlow if the battery is low.
     """
     
     def __init__(self):
@@ -380,8 +413,8 @@ class visitroom(smach.State):
 
 def main():
     """
-    This function initializes the ROS node, creates the finite state machine using `SMACH package: <http://wiki.ros.org/smach>`_. Also it subscries to both
-    *batterylevel* and *mapsituation* topics.
+    This function initializes the ROS node and creates a finite state machine using the `SMACH package: <http://wiki.ros.org/smach>`_.
+    It also subscribes to the 'batterylevel' and 'mapsituation' topics."
     """
     rospy.init_node('Robot_FSM')
     # Create a SMACH state machine

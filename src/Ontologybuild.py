@@ -1,16 +1,14 @@
 #!/usr/bin/env python
 """
 .. module:: Ontologybuild
-    :platform: Unix
-    :synopsis: Python module for building the map on the ontology
+:platform: Unix
+:synopsis: Python script for building an ontology representation of a map
 
 .. moduleauthor:: Youssef Attia youssef-attia@live.com
-This node imports the main ontology topological_map.owl file which is provided form this `repo: <https://github.com/buoncubi/topological_map>`_.
-Adds the locations and doors and disjoints them, later it makes the robot take a cruise in each room adding the *visitedAt* property for each of them
-and also updating the robot *now property. This makes it easier for the node *finitestates* to replace these properties.  
 
-Furthermore, the newly built ontology is saved on a separate file to be used from the *finitestates* node and a message is sent to the topic *mapsituation*
-indicating that the map is built.
+This script loads the main ontology file topological_map.owl and adds information about rooms and doors to it. It disjoins the rooms and doors and adds a visitedAt property for each room, indicating the time that the robot visited it. The robot's current location is also updated in the ontology.
+
+The modified ontology is then saved to a separate file and a message is published to the mapsituation topic indicating that the map has been built. This modified ontology can then be used by the finitestates node.
 """
 
 import random
@@ -34,7 +32,6 @@ Global Variables used to set the random sleeping time between each visit, the *m
 """
 minwait = 0.0
 maxwait = 1.75
-waitforarmmove=0
 markers = []
 
 
@@ -49,13 +46,13 @@ def collectmarkers(string):
 
 def findtime(list):
    """
-   Function for finding the time with Unix format from the return of a qureied proprity from armor.  
+   Find the time in Unix format from a list returned by a query for a property from the Armor ontology library.
 
    Args:
-      Time(list): The time in the armor resonse format *ex. ['"1669241751"^^xsd:long']*  
+   time (list): A list containing the time in the Armor response format, e.g. ['"1669241751"^^xsd:long']
 
    Returns:
-      Time(string): The time extarcted and changed to a string *ex. "1665579740"*
+   time (string): The extracted time as a string, e.g. "1665579740"
    """
    for i in list:
     try:
@@ -67,12 +64,13 @@ def findtime(list):
 
 def build_Ontology():
    """
-   Function for loading the Ontology, building it, visiting rooms, updating timestamps and saving the new Ontology  
+   Build an ontology by loading an existing ontology file, adding information about rooms and doors, updating the timestamps for when each room was visited, and saving the modified ontology to a new file.
 
    Args:
-      void  
+   None
+
    Returns:
-      void
+   None
    """
 
    client = ArmorClient("example", "ontoRef")
@@ -120,6 +118,15 @@ def build_Ontology():
 
 
 def main():
+   """
+   The main function of the script. It initializes a ROS node, creates a subscriber and a publisher, and sets up a service client. It then enters a loop that waits for a message to be received on the subscriber, processes the message, and publishes a response. The loop also sleeps for a random amount of time before processing the next message.
+
+   Args:
+   None
+
+   Returns:
+   None
+   """
    rospy.init_node('mapsituation_node', anonymous=True)
    subscriber=rospy.Subscriber("/marker_publisher/chatter", String, collectmarkers)
    while True:

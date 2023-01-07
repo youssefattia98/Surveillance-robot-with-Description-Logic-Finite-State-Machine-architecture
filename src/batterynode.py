@@ -1,10 +1,9 @@
 #!/usr/bin/env python
 """
-.. module:: batterynode
-    :platform: Unix
-    :synopsis: Python module for publishing the battery state to the topic (batterylevel)
+Publishes the battery state to the topic batterylevel.
 
-.. moduleauthor:: Youssef Attia youssef-attia@live.com
+If the battery is low, it cancels any existing goals and publishes 0 to the batterylevel topic.
+After a random sleep time between charegedtime_min and charegedtime_max, it publishes 1 to the batterylevel topic, indicating that the battery is charged.
 """
 
 
@@ -17,11 +16,11 @@ import random
 charegedtime_min = 100
 charegedtime_max = 300
 def cancel_move_base_goal():
-    # Create a simple action client
+    """
+    Cancels any existing goals for the move_base action server.
+    """
     client = actionlib.SimpleActionClient('move_base', MoveBaseAction)
-    # Wait for the action server to become available
     client.wait_for_server()
-    # Cancel any existing goals
     client.cancel_all_goals()
 
 def talker():

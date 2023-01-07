@@ -1,4 +1,12 @@
 #! /usr/bin/env python
+"""
+.. module:: coordinate_controller
+:platform: Unix
+:synopsis: Python module for providing a ROS service that moves the robot to the specified coordinates.
+
+.. moduleauthor:: Youssef Attia youssef-attia@live.com
+"""
+
 import rospy
 from surveillance_fsm_robot.srv import Cordinates_srv
 import actionlib
@@ -8,6 +16,16 @@ from actionlib_msgs.msg import *
 
 
 def SSR(req):
+    """
+    Function to move the robot to the specified coordinates.
+
+    Copy code
+    Args:
+        req (Cordinates_srv): A service request containing the x and y coordinates of the target location. 
+        
+    Returns:
+        int: A status code indicating whether the robot reached the target location (1) or not (-1).
+    """
     x = req.x
     y = req.y
     print("moving to X: ",x," Y: ",y)
@@ -33,6 +51,9 @@ def SSR(req):
     return 1 #if reahced the target
 
 def coordinates_srv():
+    """
+    Function to initialize the ROS node and create the Cordinates_srv service.
+    """
     print("Autonomous node.")
     rospy.init_node('coordinate_controller') #seting up the node
     s = rospy.Service('cordinates_srv' ,Cordinates_srv ,SSR) #calling server service routine
