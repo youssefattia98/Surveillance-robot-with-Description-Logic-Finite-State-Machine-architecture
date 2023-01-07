@@ -1,4 +1,5 @@
-# Description Logic & Finite State Machine Robot  
+#Surveillance robot with Description Logic & Finite State Machine architecture.  
+
 
 # [Sphinx](https://youssefattia98.github.io/fsm_robot/)
 
@@ -13,16 +14,16 @@ The package was developed on a [docker image](https://hub.docker.com/r/carms84/e
 ## I) Robot Behavior:  
 Firstly the robot is spawned in (-6.0,11.0,0.05) it then starts scanning for thr Aruco markers around which are used to build the Ontology.The robot waits for the ontology (map) to be built in Room E. Then starting from the (move_in_corridor) state it checks if the battery is not low or there is no urgent room, it moves randomly in the two corridors and wait for some time. However, if a battery is low it goes to the state (charging), which keeps the robot in room E and stays there until the battery is charged. Also, if there is an urgent room while the battery is charged the robot visits it and stays there for some time (visitroom state). All the robot movements is controlled using move_base which depends on the gmapping node. Furthermore, whenever the robot reaches a room it scans it using the LIDAR with rotating the robot with a 180 degrees.
 The following diagram shows the map Ontology that the robot builds:  
-![immagine](https://github.com/youssefattia98/fsm_robot/blob/main/docs/Digrams%20%26%20videos/MAP.PNG)  
+![immagine](https://github.com/youssefattia98/surveillance_fsm_robot/blob/main/Digrams%20%26%20videos/MAP.PNG)
 
 ## II) Finite State Machine diagram:  
 The following finite state machine shows the behavior the robot follows when the architecture was initially designed:  
-![immagine](https://github.com/youssefattia98/fsm_robot/blob/main/docs/Digrams%20%26%20videos/fsm_digram.PNG)  
+![immagine](https://github.com/youssefattia98/surveillance_fsm_robot/blob/main/Digrams%20%26%20videos/fsm_digram.PNG)
 
 ## III) Nodes diagram:    
 The following diagram shows the software architecture of the package. 
 
-![immagine](https://github.com/youssefattia98/fsm_robot/blob/main/docs/Digrams%20%26%20videos/sofar.drawio.png)  
+![immagine](https://github.com/youssefattia98/surveillance_fsm_robot/blob/main/Digrams%20%26%20videos/block%20digram.jpg)  
 
 # 3) Installation
 For setting up the environment for this package to run correctly [Armor package](https://github.com/EmaroLab/armor), [Smach package](http://wiki.ros.org/smach), [OpenCV](https://github.com/ros-perception/vision_opencv.git), [ARUCO ros](https://github.com/CarmineD8/aruco_ros.git), [gmapping](http://wiki.ros.org/gmapping) and [move_base](http://wiki.ros.org/move_base) so please check their documentation for the installation.
@@ -50,7 +51,11 @@ $ bash run.sh
 # 4) Package In Action  
 ## I) Autonomous simulation video
 
-https://user-images.githubusercontent.com/69837845/203873910-f42bc6ac-4ba5-43d1-a721-ae874e73adc1.mp4    
+
+https://user-images.githubusercontent.com/69837845/211162545-ec0dd02b-9178-411a-a17a-560b46e78ffc.mp4
+
+
+  
 
 
 ## II) Rqt diagram:  
@@ -130,7 +135,9 @@ $ rosrun rqt_graph rqt_graph
 * creating a separate node for urgency checking:  
     Creating such a node would be a better software architecture as the *finitestate* node will be only responsible for the robot behavior and the urgency will be passed by a message through a topic that the **finitestate* node subscribes to.
 
-* When the battery is low the batterynode cancels the robots current goal. However, the finite state machine does not use the return of the move_base to update the ontology or not. Therefore, if the robot was heading to a room and the battery needed to charge it will cancel the goal yet the room will be considered as visited and will be urgent in the next round. An easy fix for this problem is to check the return of the move_base to update the ontology VisitedAt property or not.
+* When the battery is low the batterynode cancels the robots current goal. However, the finite state machine does not use the return of the move_base to update the ontology or not. Therefore, if the robot was heading to a room and the battery needed to charge it will cancel the goal yet the room will be considered as visited and will be urgent in the next round. An easy fix for this problem is to check the return of the move_base to update the ontology VisitedAt property or not. 
+ 
+* Tune the Move_base parameters to work better.
 
 # 6) Authors and contacts
 * Name: Youssef Attia
