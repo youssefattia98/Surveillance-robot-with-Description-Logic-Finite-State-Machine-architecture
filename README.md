@@ -1,14 +1,14 @@
 # Surveillance robot with Description Logic & Finite State Machine architecture.  
 
 
-# [Sphinx](https://youssefattia98.github.io/fsm_robot/)
+# [Sphinx](https://youssefattia98.github.io/surveillance_fsm_robot/)
 
 # 1) Introduction
 This ROS package is an extension of the [fsm_robot package](https://github.com/youssefattia98/fsm_robot), with added features for autonomous navigation. The robot is spawned in a simulated world and scans for markers using [OpenCV](https://github.com/ros-perception/vision_opencv.git) and [ARUCO ros](https://github.com/CarmineD8/aruco_ros.git). The marker information is then passed to a server called marker_server, which replies with details about the locations on the map. This information is used to build the ontology, which is used by the finite state machine (FSM) to control the robot's movement to desired coordinates. The FSM is implemented using the [Smach package](http://wiki.ros.org/smach).
 
 The robot's movement is controlled using [gmapping](http://wiki.ros.org/gmapping) and [move_base](http://wiki.ros.org/move_base). The package also depends on the Armor package.
 
-The package was developed on a [docker image](https://hub.docker.com/r/carms84/exproblab) with all necessary dependencies pre-installed. Detailed documentation for the scripts can be found [here](https://youssefattia98.github.io/fsm_robot/), generated using Sphinx.
+The package was developed on a [docker image](https://hub.docker.com/r/carms84/exproblab) with all necessary dependencies pre-installed. Detailed documentation for the scripts can be found [here](https://youssefattia98.github.io/surveillance_fsm_robot/), generated using Sphinx.
 
 # 2) Software Architecture 
 ## I) Robot Behavior:  
