@@ -67,7 +67,7 @@ $ sudo apt-get install ros-noetic-rqt
 $ rosrun rqt_graph rqt_graph
 ```
 
-![immagine](https://github.com/youssefattia98/fsm_robot/blob/main/docs/Digrams%20%26%20videos/rqt_grapgh_nodes.jpg)
+![immagine](https://github.com/youssefattia98/surveillance_fsm_robot/blob/main/Digrams%20%26%20videos/rqt_grapgh.jpg)
 
 # 5) Working Hypothesis & Environment
 ## I) System’s Features
