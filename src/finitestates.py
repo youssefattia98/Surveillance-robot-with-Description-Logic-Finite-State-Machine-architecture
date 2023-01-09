@@ -146,52 +146,6 @@ def urgentupdate():
     else:
         return tobetrturned
 
-def findindividual(list):
-    """
-    Function for finding the individual in a list from the return of a qureied proprity from armor.
-
-    This function is used to extract the individual from the format returned by the ArmorClient query, which is a list containing the individual in a URI format.
-
-    Args:
-        Individual(list): The list containing the individual in the armor response format, ex. ['http://bnc/exp-rob-lab/2022-23#R1']
-
-    Returns:
-        Individual(string): The individual extracted and changed to a string, ex. "R1"
-    """
-    for i in list:
-        if "R1" in i:
-            return 'R1'
-        elif "R2" in i:
-            return 'R2'
-        elif "R3" in i:
-            return 'R3'
-        elif "R4" in i:
-            return 'R4'
-        elif "C1" in i:
-            return 'C1'
-        elif "C2" in i:
-            return 'C2'
-        elif "E" in i:
-            return 'E'
-
-def findbt(list):
-    """
-    Function for extracting data between quotation marks from a list. 
-
-    Args:
-        lst (list): A list containing strings with data enclosed in quotation marks. 
-
-    Returns:
-        str: The extracted data. 
-    """
-    for i in list:
-        try:
-            start = i.index('"') + len('"')
-            end = i.index('"', start)
-            return i[start:end]
-        except ValueError:
-            return ""
-
 def moveto(newloction):
     """
     This function moves the robot to a new location specified in the argument. It determines the current location of the robot and updates the
@@ -207,50 +161,69 @@ def moveto(newloction):
         None
     """
     client = ArmorClient("example", "ontoRef")
-    #Update robot isin property
     client.call('REASON','','',[''])
     req=client.call('QUERY','OBJECTPROP','IND',['isIn','Robot1'])
     oldlocation=findindividual(req.queried_objects)
+    print('From', oldlocation, 'to: ', newloction)
+    canReach = client.call('QUERY','OBJECTPROP','IND',['canReach', 'Robot1'])
+    canReach = list_Locations(canReach.queried_objects)
 
-    if oldlocation== 'R1' or oldlocation == 'R2': #C1 bec u are in r1 or r2
-        print("I am moving from: " + oldlocation, "to: " + newloction)
-        client.call('REPLACE','OBJECTPROP','IND',['isIn', 'Robot1','C1',oldlocation])
-    elif oldlocation == 'R3' or oldlocation == 'R4': #C2 bec u are in r3 or r4
-        print("I am moving from: " + oldlocation, "to: " + newloction)
-        client.call('REPLACE','OBJECTPROP','IND',['isIn', 'Robot1','C2',oldlocation])
-    client.call('REASON','','',[''])
-    req=client.call('QUERY','OBJECTPROP','IND',['isIn','Robot1'])
-    oldlocation=findindividual(req.queried_objects)
-    if oldlocation == 'C1' and (newloction== 'R3' or newloction =='R4'): #u want to reach r3 or r4 but u are in c1 so u have to go to c2 first
-        print("I am moving from: " + oldlocation, "to: " + newloction)
-        client.call('REPLACE','OBJECTPROP','IND',['isIn', 'Robot1','C2','C1'])
-    elif oldlocation == 'C2' and (newloction== 'R1' or newloction =='R2'): #u want to reach r1 or r2 but u are in c2 so u have to go to c1 first
-        print("I am moving from: " + oldlocation, "to: " + newloction)
-        client.call('REPLACE','OBJECTPROP','IND',['isIn', 'Robot1','C1','C2'])
-    
-    client.call('REASON','','',[''])
-    req=client.call('QUERY','OBJECTPROP','IND',['isIn','Robot1'])
-    oldlocation=findindividual(req.queried_objects)
-    print("I am moving from: " + oldlocation, "to: " + newloction)
-    move_base(newloction)
-    client.call('REPLACE','OBJECTPROP','IND',['isIn', 'Robot1',newloction,oldlocation])
-    #i should know what room it is and go to its cooridnates
-    
-    #Update robot now property
-    client.call('REASON','','',[''])
-    req=client.call('QUERY','DATAPROP','IND',['now', 'Robot1'])
-    oldtimerobot=findbt(req.queried_objects)
-    newtime=str(math.floor(time.time()))
-    client.call('REPLACE','DATAPROP','IND',['now', 'Robot1', 'Long', newtime, oldtimerobot])
 
-    #Update the location visited at property
-    client.call('REASON','','',[''])
-    
-    if newloction!= 'C1' and  newloction!='C2' and  newloction!= 'E':
-        req=client.call('QUERY','DATAPROP','IND',['visitedAt', newloction])
-        oldtimelocation=findbt(req.queried_objects)
-        client.call('REPLACE','DATAPROP','IND',['visitedAt', newloction, 'Long', newtime, oldtimelocation])
+    if newloction in canReach:
+        #Update isIn property
+        client.call('REPLACE','OBJECTPROP','IND',['isIn', 'Robot1',newloction, oldlocation])
+        move_base(newloction)
         client.call('REASON','','',[''])
+        
+        #Update now data property
+        req=client.call('QUERY','DATAPROP','IND',['now', 'Robot1'])
+        client.call('REPLACE','DATAPROP','IND',['now', 'Robot1', 'Long', str(math.floor(time.time())), findbt(req.queried_objects)])
+        client.call('REASON','','',[''])
+        
+        #Update visitedAt data property
+        isRoom = client.call('QUERY','CLASS','IND',[newloction, 'true'])
+        if isRoom.queried_objects == ['URGENT'] or isRoom.queried_objects == ['ROOM']:
+            req=client.call('QUERY','DATAPROP','IND',['visitedAt', newloction])
+            client.call('REPLACE','DATAPROP','IND',['visitedAt', newloction, 'Long', str(math.floor(time.time())), findbt(req.queried_objects)])
+            client.call('REASON','','',[''])
+
+
+
+    else:
+        location_connectedTo = client.call('QUERY','OBJECTPROP','IND',['connectedTo', newloction])
+        location_connectedTo = list_Locations(location_connectedTo.queried_objects)
+        common=find_common_connection(location_connectedTo,canReach)
+        if common == None:
+            client.call('REPLACE','OBJECTPROP','IND',['isIn', 'Robot1',canReach[0],oldlocation])
+            move_base(canReach[0])
+            client.call('REASON','','',[''])
+            req=client.call('QUERY','OBJECTPROP','IND',['isIn','Robot1'])
+            oldlocation=findindividual(req.queried_objects)
+            canReach = client.call('QUERY','OBJECTPROP','IND',['canReach', 'Robot1'])
+            common=find_common_connection(location_connectedTo,list_Locations(canReach.queried_objects))
+
+        
+        client.call('REPLACE','OBJECTPROP','IND',['isIn', 'Robot1',common,oldlocation])
+        move_base(common)
+        client.call('REASON','','',[''])
+        req=client.call('QUERY','OBJECTPROP','IND',['isIn','Robot1'])
+        oldlocation=findindividual(req.queried_objects)
+        client.call('REPLACE','OBJECTPROP','IND',['isIn', 'Robot1',newloction,oldlocation])
+        move_base(newloction)
+        client.call('REASON','','',[''])
+        #Update now data property
+        req=client.call('QUERY','DATAPROP','IND',['now', 'Robot1'])
+        client.call('REPLACE','DATAPROP','IND',['now', 'Robot1', 'Long', str(math.floor(time.time())), findbt(req.queried_objects)])
+        client.call('REASON','','',[''])
+        #Update visitedAt data property
+        isRoom = client.call('QUERY','CLASS','IND',[newloction, 'true'])
+        if isRoom.queried_objects == ['URGENT'] or isRoom.queried_objects == ['ROOM']:
+            req=client.call('QUERY','DATAPROP','IND',['visitedAt', newloction])
+            client.call('REPLACE','DATAPROP','IND',['visitedAt', newloction, 'Long', str(math.floor(time.time())), findbt(req.queried_objects)])
+            client.call('REASON','','',[''])
+
+    req=client.call('QUERY','OBJECTPROP','IND',['isIn','Robot1'])
+    print('Robot isIn',findindividual(req.queried_objects))
 
 def scan():
     """
@@ -301,6 +274,74 @@ def set_coordinates():
         Y=float(findbt(req.queried_objects))
         coordinates[i] = {'X': X, 'Y': Y}
 
+def findindividual(list):
+    """
+    Function for finding the individual in a list from the return of a qureied proprity from armor.
+
+    This function is used to extract the individual from the format returned by the ArmorClient query, which is a list containing the individual in a URI format.
+
+    Args:
+        Individual(list): The list containing the individual in the armor response format, ex. ['http://bnc/exp-rob-lab/2022-23#R1']
+
+    Returns:
+        Individual(string): The individual extracted and changed to a string, ex. "R1"
+    """
+    for i in list:
+        if "R1" in i:
+            return 'R1'
+        elif "R2" in i:
+            return 'R2'
+        elif "R3" in i:
+            return 'R3'
+        elif "R4" in i:
+            return 'R4'
+        elif "C1" in i:
+            return 'C1'
+        elif "C2" in i:
+            return 'C2'
+        elif "E" in i:
+            return 'E'
+def findbt(list):
+    """
+    Function for extracting data between quotation marks from a list. 
+
+    Args:
+        lst (list): A list containing strings with data enclosed in quotation marks. 
+
+    Returns:
+        str: The extracted data. 
+    """
+    for i in list:
+        try:
+            start = i.index('"') + len('"')
+            end = i.index('"', start)
+            return i[start:end]
+        except ValueError:
+            return ""
+def list_Locations(list):
+    position_list = []
+    for i in list:
+        if "R1" in i:
+            position_list.append('R1')
+        elif "R2" in i:
+            position_list.append('R2')
+        elif "R3" in i:
+            position_list.append('R3')
+        elif "R4" in i:
+            position_list.append('R4')
+        elif "C1" in i:
+            position_list.append('C1')
+        elif "C2" in i:
+            position_list.append('C2')
+        elif "E" in i:
+            position_list.append('E')
+    return position_list
+def find_common_connection(l1, l2):
+  for common in l1:
+    if common in l2:
+        return common
+
+
 class waiting_for_map(smach.State):
     """
     Class for state waiting_for_map in which the robot waits for the mapflag to be True and then loads the ontology.
@@ -325,7 +366,7 @@ class waiting_for_map(smach.State):
             client.call('LOAD','FILE','',[newontology, 'http://bnc/exp-rob-lab/2022-23', 'true', 'PELLET', 'false'])
             print("MAP IS LOADED...")
             set_coordinates()
-            moveto('E')
+            move_base('E')
             return 'maploaded'
 
 class move_in_corridor(smach.State):

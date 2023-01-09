@@ -81,55 +81,6 @@ $ rosrun rqt_graph rqt_graph
 * As mentioned before, the package launch files operates the robot in autonomous mode there for the user has not input for the battery state or map situation state. However, all the states was tested and the video above in point *4)I)* shows so.
 
 ## III) Future Improvements
-* Upgrade *moveto* function:  
-    This function is responsible for moving the robot from its current position to another upgrading *isIn*,*now* and *visitedAt* properties. it is not a generic function and uses the understanding of the used map to move the robot correctly. However, using the *connected To* property would make the function more generic and applicable for other maps.  
-
-    ```python
-    def moveto(newloction):
-    client = ArmorClient("example", "ontoRef")
-    #Update robot isin property
-    client.call('REASON','','',[''])
-    req=client.call('QUERY','OBJECTPROP','IND',['isIn','Robot1'])
-    oldlocation=findindividual(req.queried_objects)
-
-    if oldlocation== 'R1' or oldlocation == 'R2':
-        print("I am moving from: " + oldlocation, "to: " + newloction)
-        client.call('REPLACE','OBJECTPROP','IND',['isIn', 'Robot1','C1',oldlocation])
-    elif oldlocation == 'R3' or oldlocation == 'R4':
-        print("I am moving from: " + oldlocation, "to: " + newloction)
-        client.call('REPLACE','OBJECTPROP','IND',['isIn', 'Robot1','C2',oldlocation])
-    client.call('REASON','','',[''])
-    req=client.call('QUERY','OBJECTPROP','IND',['isIn','Robot1'])
-    oldlocation=findindividual(req.queried_objects)
-    if oldlocation == 'C1' and (newloction== 'R3' or newloction =='R4'):
-        print("I am moving from: " + oldlocation, "to: " + newloction)
-        client.call('REPLACE','OBJECTPROP','IND',['isIn', 'Robot1','C2','C1'])
-    elif oldlocation == 'C2' and (newloction== 'R1' or newloction =='R2'):
-        print("I am moving from: " + oldlocation, "to: " + newloction)
-        client.call('REPLACE','OBJECTPROP','IND',['isIn', 'Robot1','C1','C2'])
-    
-    client.call('REASON','','',[''])
-    req=client.call('QUERY','OBJECTPROP','IND',['isIn','Robot1'])
-    oldlocation=findindividual(req.queried_objects)
-    print("I am moving from: " + oldlocation, "to: " + newloction)
-    client.call('REPLACE','OBJECTPROP','IND',['isIn', 'Robot1',newloction,oldlocation])
-    
-    #Update robot now property
-    client.call('REASON','','',[''])
-    req=client.call('QUERY','DATAPROP','IND',['now', 'Robot1'])
-    oldtimerobot=findtime(req.queried_objects)
-    newtime=str(math.floor(time.time()))
-    client.call('REPLACE','DATAPROP','IND',['now', 'Robot1', 'Long', newtime, oldtimerobot])
-
-    #Update the location visited at property
-    client.call('REASON','','',[''])
-    
-    if newloction!= 'C1' and  newloction!='C2' and  newloction!= 'E':
-        req=client.call('QUERY','DATAPROP','IND',['visitedAt', newloction])
-        oldtimelocation=findtime(req.queried_objects)
-        client.call('REPLACE','DATAPROP','IND',['visitedAt', newloction, 'Long', newtime, oldtimelocation])
-        client.call('REASON','','',[''])
-    ```
 * Creating a manual mode launch file:  
     Applying such solution would give the user the capability to design his/her own map and pass it to the package, also gives the capability of testing different situations to see how the robot behaves.
 * creating a separate node for urgency checking:  

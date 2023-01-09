@@ -1,4 +1,3 @@
-
 #include <iostream>
 #include <aruco/aruco.h>
 #include <aruco/cvdrawingutils.h>
@@ -50,7 +49,7 @@ public:
   {
     bool publishImage = image_pub_.getNumSubscribers() > 0;
     bool publishDebug = debug_pub_.getNumSubscribers() > 0;
-    std_msgs::String msg2;
+    std_msgs::String t_msg;
     std::stringstream ss;
 
     ros::Time curr_stamp = msg->header.stamp;
@@ -72,10 +71,10 @@ public:
         {
           std::cout << markers_.at(i).id << " ";
           ss<<markers_.at(i).id << " ";
-          msg2.data = ss.str();
+          t_msg.data = ss.str();
         }
         std::cout << std::endl;
-        chatter_pub.publish(msg2);
+        chatter_pub.publish(t_msg);
 
       // draw detected markers on the image for visualization
       for (std::size_t i = 0; i < markers_.size(); ++i)
