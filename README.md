@@ -84,9 +84,7 @@ $ rosrun rqt_graph rqt_graph
 * Creating a manual mode launch file:  
     Applying such solution would give the user the capability to design his/her own map and pass it to the package, also gives the capability of testing different situations to see how the robot behaves.
 * creating a separate node for urgency checking:  
-    Creating such a node would be a better software architecture as the *finitestate* node will be only responsible for the robot behavior and the urgency will be passed by a message through a topic that the **finitestate* node subscribes to.
-
-* When the battery is low the batterynode cancels the robots current goal. However, the finite state machine does not use the return of the move_base to update the ontology or not. Therefore, if the robot was heading to a room and the battery needed to charge it will cancel the goal yet the room will be considered as visited and will be urgent in the next round. An easy fix for this problem is to check the return of the move_base to update the ontology VisitedAt property or not. 
+    Creating such a node would be a better software architecture as the *finitestate* node will be only responsible for the robot behavior and the urgency will be passed by a message through a topic that the **finitestate* node subscribes to. 
  
 * Tune the Move_base parameters to work better.
 

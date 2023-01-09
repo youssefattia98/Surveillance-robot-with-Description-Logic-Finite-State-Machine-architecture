@@ -357,7 +357,7 @@
         <hasDoor rdf:resource="http://bnc/exp-rob-lab/2022-23#D1"/>
         <Xcoordinates rdf:datatype="http://www.w3.org/2001/XMLSchema#float">-7.0</Xcoordinates>
         <Ycoordinates rdf:datatype="http://www.w3.org/2001/XMLSchema#float">3.0</Ycoordinates>
-        <visitedAt rdf:datatype="http://www.w3.org/2001/XMLSchema#long">1673233252</visitedAt>
+        <visitedAt rdf:datatype="http://www.w3.org/2001/XMLSchema#long">1673234837</visitedAt>
     </owl:NamedIndividual>
     
 
@@ -369,7 +369,7 @@
         <hasDoor rdf:resource="http://bnc/exp-rob-lab/2022-23#D2"/>
         <Xcoordinates rdf:datatype="http://www.w3.org/2001/XMLSchema#float">-7.0</Xcoordinates>
         <Ycoordinates rdf:datatype="http://www.w3.org/2001/XMLSchema#float">-4.0</Ycoordinates>
-        <visitedAt rdf:datatype="http://www.w3.org/2001/XMLSchema#long">1673233249</visitedAt>
+        <visitedAt rdf:datatype="http://www.w3.org/2001/XMLSchema#long">1673234832</visitedAt>
     </owl:NamedIndividual>
     
 
@@ -381,7 +381,7 @@
         <hasDoor rdf:resource="http://bnc/exp-rob-lab/2022-23#D3"/>
         <Xcoordinates rdf:datatype="http://www.w3.org/2001/XMLSchema#float">9.0</Xcoordinates>
         <Ycoordinates rdf:datatype="http://www.w3.org/2001/XMLSchema#float">3.0</Ycoordinates>
-        <visitedAt rdf:datatype="http://www.w3.org/2001/XMLSchema#long">1673233254</visitedAt>
+        <visitedAt rdf:datatype="http://www.w3.org/2001/XMLSchema#long">1673234829</visitedAt>
     </owl:NamedIndividual>
     
 
@@ -393,7 +393,7 @@
         <hasDoor rdf:resource="http://bnc/exp-rob-lab/2022-23#D4"/>
         <Xcoordinates rdf:datatype="http://www.w3.org/2001/XMLSchema#float">9.0</Xcoordinates>
         <Ycoordinates rdf:datatype="http://www.w3.org/2001/XMLSchema#float">-4.0</Ycoordinates>
-        <visitedAt rdf:datatype="http://www.w3.org/2001/XMLSchema#long">1673233258</visitedAt>
+        <visitedAt rdf:datatype="http://www.w3.org/2001/XMLSchema#long">1673234835</visitedAt>
     </owl:NamedIndividual>
     
 

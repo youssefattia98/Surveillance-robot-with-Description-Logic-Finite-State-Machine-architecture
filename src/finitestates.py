@@ -85,14 +85,17 @@ def move_base(desired):
     Returns:
         rt: The result of the cordinates_srv service call, indicating whether the target was reached successfully.
     """
+    tx=0
     cordinates_srv = rospy.ServiceProxy('cordinates_srv', Cordinates_srv)
     rt=cordinates_srv(coordinates[desired]['X'] , coordinates[desired]['Y'])
     if rt.return_ == 1:
             print("Target reached successfully!")
+            tx=1
     else:
             print("Target not reached try again!")
             move_base(desired)
-    return rt
+            tx=0
+    return tx
 
 def urgentupdate():
     """
@@ -171,21 +174,22 @@ def moveto(newloction):
 
     if newloction in canReach:
         #Update isIn property
-        client.call('REPLACE','OBJECTPROP','IND',['isIn', 'Robot1',newloction, oldlocation])
-        move_base(newloction)
-        client.call('REASON','','',[''])
-        
-        #Update now data property
-        req=client.call('QUERY','DATAPROP','IND',['now', 'Robot1'])
-        client.call('REPLACE','DATAPROP','IND',['now', 'Robot1', 'Long', str(math.floor(time.time())), findbt(req.queried_objects)])
-        client.call('REASON','','',[''])
-        
-        #Update visitedAt data property
-        isRoom = client.call('QUERY','CLASS','IND',[newloction, 'true'])
-        if isRoom.queried_objects == ['URGENT'] or isRoom.queried_objects == ['ROOM']:
-            req=client.call('QUERY','DATAPROP','IND',['visitedAt', newloction])
-            client.call('REPLACE','DATAPROP','IND',['visitedAt', newloction, 'Long', str(math.floor(time.time())), findbt(req.queried_objects)])
+        rt=move_base(newloction)
+        if rt == 1:
+            client.call('REPLACE','OBJECTPROP','IND',['isIn', 'Robot1',newloction, oldlocation])
             client.call('REASON','','',[''])
+            
+            #Update now data property
+            req=client.call('QUERY','DATAPROP','IND',['now', 'Robot1'])
+            client.call('REPLACE','DATAPROP','IND',['now', 'Robot1', 'Long', str(math.floor(time.time())), findbt(req.queried_objects)])
+            client.call('REASON','','',[''])
+            
+            #Update visitedAt data property
+            isRoom = client.call('QUERY','CLASS','IND',[newloction, 'true'])
+            if isRoom.queried_objects == ['URGENT'] or isRoom.queried_objects == ['ROOM']:
+                req=client.call('QUERY','DATAPROP','IND',['visitedAt', newloction])
+                client.call('REPLACE','DATAPROP','IND',['visitedAt', newloction, 'Long', str(math.floor(time.time())), findbt(req.queried_objects)])
+                client.call('REASON','','',[''])
 
 
 
@@ -194,33 +198,35 @@ def moveto(newloction):
         location_connectedTo = list_Locations(location_connectedTo.queried_objects)
         common=find_common_connection(location_connectedTo,canReach)
         if common == None:
-            client.call('REPLACE','OBJECTPROP','IND',['isIn', 'Robot1',canReach[0],oldlocation])
-            move_base(canReach[0])
+            rt=move_base(canReach[0])
+            if rt == 1:
+                client.call('REPLACE','OBJECTPROP','IND',['isIn', 'Robot1',canReach[0],oldlocation])
+                client.call('REASON','','',[''])
+                req=client.call('QUERY','OBJECTPROP','IND',['isIn','Robot1'])
+                oldlocation=findindividual(req.queried_objects)
+                canReach = client.call('QUERY','OBJECTPROP','IND',['canReach', 'Robot1'])
+                common=find_common_connection(location_connectedTo,list_Locations(canReach.queried_objects))
+
+        rt=move_base(common)
+        if rt == 1:
+            client.call('REPLACE','OBJECTPROP','IND',['isIn', 'Robot1',common,oldlocation])
             client.call('REASON','','',[''])
             req=client.call('QUERY','OBJECTPROP','IND',['isIn','Robot1'])
             oldlocation=findindividual(req.queried_objects)
-            canReach = client.call('QUERY','OBJECTPROP','IND',['canReach', 'Robot1'])
-            common=find_common_connection(location_connectedTo,list_Locations(canReach.queried_objects))
-
-        
-        client.call('REPLACE','OBJECTPROP','IND',['isIn', 'Robot1',common,oldlocation])
-        move_base(common)
-        client.call('REASON','','',[''])
-        req=client.call('QUERY','OBJECTPROP','IND',['isIn','Robot1'])
-        oldlocation=findindividual(req.queried_objects)
-        client.call('REPLACE','OBJECTPROP','IND',['isIn', 'Robot1',newloction,oldlocation])
-        move_base(newloction)
-        client.call('REASON','','',[''])
-        #Update now data property
-        req=client.call('QUERY','DATAPROP','IND',['now', 'Robot1'])
-        client.call('REPLACE','DATAPROP','IND',['now', 'Robot1', 'Long', str(math.floor(time.time())), findbt(req.queried_objects)])
-        client.call('REASON','','',[''])
-        #Update visitedAt data property
-        isRoom = client.call('QUERY','CLASS','IND',[newloction, 'true'])
-        if isRoom.queried_objects == ['URGENT'] or isRoom.queried_objects == ['ROOM']:
-            req=client.call('QUERY','DATAPROP','IND',['visitedAt', newloction])
-            client.call('REPLACE','DATAPROP','IND',['visitedAt', newloction, 'Long', str(math.floor(time.time())), findbt(req.queried_objects)])
+        rt=move_base(newloction)
+        if rt == 1:
+            client.call('REPLACE','OBJECTPROP','IND',['isIn', 'Robot1',newloction,oldlocation])
             client.call('REASON','','',[''])
+            #Update now data property
+            req=client.call('QUERY','DATAPROP','IND',['now', 'Robot1'])
+            client.call('REPLACE','DATAPROP','IND',['now', 'Robot1', 'Long', str(math.floor(time.time())), findbt(req.queried_objects)])
+            client.call('REASON','','',[''])
+            #Update visitedAt data property
+            isRoom = client.call('QUERY','CLASS','IND',[newloction, 'true'])
+            if isRoom.queried_objects == ['URGENT'] or isRoom.queried_objects == ['ROOM']:
+                req=client.call('QUERY','DATAPROP','IND',['visitedAt', newloction])
+                client.call('REPLACE','DATAPROP','IND',['visitedAt', newloction, 'Long', str(math.floor(time.time())), findbt(req.queried_objects)])
+                client.call('REASON','','',[''])
 
     req=client.call('QUERY','OBJECTPROP','IND',['isIn','Robot1'])
     print('Robot isIn',findindividual(req.queried_objects))
